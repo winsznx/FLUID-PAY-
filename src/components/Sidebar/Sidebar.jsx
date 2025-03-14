@@ -105,7 +105,7 @@ const Sidebar = ({ selectedChain, setSelectedChain, activeNavItem, setActiveNavI
       
       <div className="mt-8 flex justify-between text-xs text-gray-500">
         <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">GitHub</a>
-        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">Twitter</a>
+        <a href="https://twitter.com/Fluidpayy" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">Twitter</a>
       </div>
       
       <div className="mt-6 p-3 bg-blue-600 rounded-md text-white flex justify-between items-center cursor-pointer hover:bg-blue-700" onClick={() => console.log('Fluid Pay clicked')}>
