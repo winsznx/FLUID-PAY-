@@ -3,6 +3,7 @@ import FeatureCard from '../FeatureCard/FeatureCard';
 import { FaClone, FaExchangeAlt, FaRandom, FaMoneyBillWave, FaBookmark, FaLock } from 'react-icons/fa';
 // Import your components
 import Swap from '../Features/Swap';
+import Disperse from '../Features/Disperse';
 // Import other components as they become available
 // import Wallet from '../Features/Wallet';
 // import Send from '../Features/Send';
@@ -94,11 +95,13 @@ const MainContent = ({ selectedChain, currentView }) => {
         return renderDashboard();
       case 'swap':
         return <Swap selectedChain={selectedChain} />;
+      case 'disperse':
+        return <Disperse selectedChain={selectedChain} />;
       // Add other cases as you implement more components
       // case 'send':
       //   return <Send selectedChain={selectedChain} />;
-      // case 'disperse':
-      //   return <Disperse selectedChain={selectedChain} />;
+      // case 'addressBook':
+      //   return <AddressBook selectedChain={selectedChain} />;
       // etc.
       default:
         return renderDashboard();
