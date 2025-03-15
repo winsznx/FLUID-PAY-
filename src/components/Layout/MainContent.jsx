@@ -4,7 +4,7 @@ import { FaClone, FaExchangeAlt, FaRandom, FaMoneyBillWave, FaBookmark, FaLock }
 // Import your components
 import Swap from '../Features/Swap';
 import Disperse from '../Features/Disperse';
-// Import other components as they become available
+//  i will Import other components as they become available con tinually
 // import Wallet from '../Features/Wallet';
 // import Send from '../Features/Send';
 // etc.
@@ -55,7 +55,7 @@ const MainContent = ({ selectedChain, currentView }) => {
 
         <FeatureCard 
           title={`DID YOU SAY "DISPERSE?"`}
-          description="Beloved by projects and individuals, send tokens to multiple addresses at the same time with Disperse."
+          description=" OH yeah you can now   send tokens to multiple addresses at the same time with Disperse."
           buttonText="Disperse tokens"
           icon={<FaRandom />}
           onButtonClick={() => handleFeatureClick('Disperse')}
