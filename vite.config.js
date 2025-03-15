@@ -3,10 +3,17 @@ import tailwindcss from '@tailwindcss/vite'
 import autoprefixer from 'autoprefixer'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react()
+    react(),
   ],
+  optimizeDeps: {
+    include: ['ethers'], // Ensure ethers is bundled properly
+  },
+  build: {
+    rollupOptions: {
+      external: ['ethers'], // Ensures Rollup doesn't fail to resolve it
+    },
+  },
 })
