@@ -64,7 +64,7 @@ const Disperse = ({ selectedChain }) => {
           throw new Error(`Invalid address: ${address}`);
         }
 
-        // Parse amount - convert to wei (or smallest token unit)
+        // Parse amount - convert to wei (or smallest token unit) in this  place
         const amount = ethers.utils.parseEther(amountStr);
         
         recipients.push(address);
