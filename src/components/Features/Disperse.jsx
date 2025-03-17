@@ -12,7 +12,7 @@ const Disperse = ({ selectedChain }) => {
   const [parsedRecipients, setParsedRecipients] = useState([]);
   const [parsedAmounts, setParsedAmounts] = useState([]);
   const [tokenList, setTokenList] = useState([
-    { address: 'native', symbol: 'ETH', name: 'Native Token' },
+    { address: 'native', symbol: 'SCROLL ETH', name: 'Native Token' },
     // Add default tokens based on selected chain
   ]);
 
@@ -20,13 +20,13 @@ const Disperse = ({ selectedChain }) => {
   useEffect(() => {
     // This would be replaced with actual token data for each chain
     const chainTokens = {
-      'Ethereum': [
-        { address: 'native', symbol: 'ETH', name: 'Ethereum' },
-        { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', name: 'USD Coin' },
+      'SCROLL': [
+        { address: 'native', symbol: 'SCROLL ETH', name: 'Ethereum' },
+        { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', name: 'SCROLL ETHNPM R' },
         { address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', symbol: 'USDT', name: 'Tether USD' },
       ],
       'Scroll': [
-        { address: 'native', symbol: 'ETH', name: 'Ethereum' },
+        { address: '', symbol: ' SCROLL ETH', name: 'SCROLL ETH' },
         // Add Scroll-specific tokens when available
       ],
       // Add other chains as needed

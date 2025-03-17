@@ -4,7 +4,7 @@ import NavItem from '../Navigation/NavItem';
 
 const Sidebar = ({ selectedChain, setSelectedChain, activeNavItem, setActiveNavItem }) => {
   const [isChainDropdownOpen, setIsChainDropdownOpen] = useState(false);
-  const chains = ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'];
+  const chains = ['Scroll ', 'Ethereum ','Arbitrum', 'Solana', 'Base', 'Zksync'];
   
   return (
     <div className="w-64 border-r border-gray-200 p-4 bg-white">
