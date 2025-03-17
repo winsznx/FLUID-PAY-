@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {ethers}  from 'ethers';
 import { FaRandom, FaInfoCircle, FaSpinner } from 'react-icons/fa';
 
 const Disperse = ({ selectedChain }) => {
@@ -12,9 +11,20 @@ const Disperse = ({ selectedChain }) => {
   const [parsedRecipients, setParsedRecipients] = useState([]);
   const [parsedAmounts, setParsedAmounts] = useState([]);
   const [tokenList, setTokenList] = useState([
-    { address: 'native', symbol: 'SCROLL ETH', name: 'Native Token' },
-    // Add default tokens based on selected chain
+    { address: 'native', symbol: 'SCROLL ETH', name: 'Native Token' }
   ]);
+  const [ethers, setEthers] = useState(null);
+
+  // Initialize ethers only on client-side
+  useEffect(() => {
+    const initEthers = async () => {
+      if (typeof window !== 'undefined') {
+        const ethersModule = await import('ethers');
+        setEthers(ethersModule);
+      }
+    };
+    initEthers();
+  }, []);
 
   // Update token list when chain changes
   useEffect(() => {
@@ -22,13 +32,13 @@ const Disperse = ({ selectedChain }) => {
     const chainTokens = {
       'SCROLL': [
         { address: 'native', symbol: 'SCROLL ETH', name: 'Ethereum' },
-        { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', name: 'SCROLL ETHNPM R' },
+        { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', name: 'USD Coin' },
         { address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', symbol: 'USDT', name: 'Tether USD' },
       ],
       'Scroll': [
-        { address: '', symbol: ' SCROLL ETH', name: 'SCROLL ETH' },
+        { address: 'native', symbol: 'SCROLL ETH', name: 'SCROLL ETH' }
         // Add Scroll-specific tokens when available
-      ],
+      ]
       // Add other chains as needed
     };
 
@@ -37,7 +47,7 @@ const Disperse = ({ selectedChain }) => {
 
   // Parse the recipients and amounts from the textarea
   useEffect(() => {
-    if (!recipientData.trim()) {
+    if (!recipientData.trim() || !ethers) {
       setParsedRecipients([]);
       setParsedAmounts([]);
       setTotalAmount('0');
@@ -64,7 +74,7 @@ const Disperse = ({ selectedChain }) => {
           throw new Error(`Invalid address: ${address}`);
         }
 
-        // Parse amount - convert to wei (or smallest token unit) in this  place
+        // Parse amount - convert to wei (or smallest token unit)
         const amount = ethers.utils.parseEther(amountStr);
         
         recipients.push(address);
@@ -79,10 +89,10 @@ const Disperse = ({ selectedChain }) => {
     } catch (err) {
       setError(`Error parsing input: ${err.message}`);
     }
-  }, [recipientData]);
+  }, [recipientData, ethers]);
 
   const handleDisperseTokens = async () => {
-    if (parsedRecipients.length === 0) {
+    if (!ethers || parsedRecipients.length === 0) {
       setError('Please provide valid recipient information.');
       return;
     }
@@ -93,7 +103,7 @@ const Disperse = ({ selectedChain }) => {
 
     try {
       // Check if wallet is connected
-      if (!window.ethereum) {
+      if (typeof window === 'undefined' || !window.ethereum) {
         throw new Error('No wallet detected. Please install MetaMask or another Ethereum wallet.');
       }
 
@@ -134,6 +144,110 @@ const Disperse = ({ selectedChain }) => {
     }
   };
 
+  // Display a loading state if needed
+  const renderContent = () => {
+    if (typeof window === 'undefined' && !ethers) {
+      return (
+        <div className="flex items-center justify-center p-10">
+          <FaSpinner className="animate-spin mr-2" />
+          <span>Loading...</span>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <div className="bg-white rounded-xl p-6 shadow">
+          <h2 className="text-lg font-semibold mb-4">Select Token</h2>
+          
+          <div className="mb-6">
+            <select 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={tokenAddress}
+              onChange={(e) => setTokenAddress(e.target.value)}
+              disabled={isLoading}
+            >
+              {tokenList.map(token => (
+                <option key={token.address} value={token.address}>
+                  {token.symbol} - {token.name}
+                </option>
+              ))}
+              <option value="custom">Custom Token</option>
+            </select>
+            
+            {tokenAddress === 'custom' && (
+              <input
+                type="text"
+                className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Token Contract Address (0x...)"
+                onChange={(e) => setTokenAddress(e.target.value)}
+                disabled={isLoading}
+              />
+            )}
+          </div>
+          
+          <h2 className="text-lg font-semibold mb-2">Recipients and Amounts</h2>
+          <div className="flex items-center text-sm text-gray-600 mb-2">
+            <FaInfoCircle className="mr-1" />
+            <span>Enter one address and amount per line (format: address, amount)</span>
+          </div>
+          
+          <textarea
+            className="w-full p-3 border border-gray-300 rounded-lg h-40 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="0x1234...5678, 0.1
+0xabcd...ef01, 0.25"
+            value={recipientData}
+            onChange={(e) => setRecipientData(e.target.value)}
+            disabled={isLoading}
+          ></textarea>
+          
+          {parsedRecipients.length > 0 && (
+            <div className="mt-2 text-sm text-gray-600">
+              Recipients: {parsedRecipients.length} | Total Amount: {totalAmount} {tokenAddress === 'native' ? 'ETH' : 'Tokens'}
+            </div>
+          )}
+          
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+              {success}
+            </div>
+          )}
+          
+          <button
+            className={`mt-6 w-full p-3 rounded-lg font-medium flex items-center justify-center 
+              ${isLoading || parsedRecipients.length === 0 
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+            onClick={handleDisperseTokens}
+            disabled={isLoading || parsedRecipients.length === 0}
+          >
+            {isLoading ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <FaRandom className="mr-2" />
+                Disperse Tokens
+              </>
+            )}
+          </button>
+          
+          <div className="mt-2 text-xs text-gray-500">
+            Gas costs will be optimized by batching all transfers in a single transaction.
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-blue-600 rounded-xl p-8 text-white">
@@ -149,93 +263,7 @@ const Disperse = ({ selectedChain }) => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-6 shadow">
-        <h2 className="text-lg font-semibold mb-4">Select Token</h2>
-        
-        <div className="mb-6">
-          <select 
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            value={tokenAddress}
-            onChange={(e) => setTokenAddress(e.target.value)}
-            disabled={isLoading}
-          >
-            {tokenList.map(token => (
-              <option key={token.address} value={token.address}>
-                {token.symbol} - {token.name}
-              </option>
-            ))}
-            <option value="custom">Custom Token</option>
-          </select>
-          
-          {tokenAddress === 'custom' && (
-            <input
-              type="text"
-              className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Token Contract Address (0x...)"
-              onChange={(e) => setTokenAddress(e.target.value)}
-              disabled={isLoading}
-            />
-          )}
-        </div>
-        
-        <h2 className="text-lg font-semibold mb-2">Recipients and Amounts</h2>
-        <div className="flex items-center text-sm text-gray-600 mb-2">
-          <FaInfoCircle className="mr-1" />
-          <span>Enter one address and amount per line (format: address, amount)</span>
-        </div>
-        
-        <textarea
-          className="w-full p-3 border border-gray-300 rounded-lg h-40 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="0x1234...5678, 0.1
-0xabcd...ef01, 0.25"
-          value={recipientData}
-          onChange={(e) => setRecipientData(e.target.value)}
-          disabled={isLoading}
-        ></textarea>
-        
-        {parsedRecipients.length > 0 && (
-          <div className="mt-2 text-sm text-gray-600">
-            Recipients: {parsedRecipients.length} | Total Amount: {totalAmount} {tokenAddress === 'native' ? 'ETH' : 'Tokens'}
-          </div>
-        )}
-        
-        {error && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-        
-        {success && (
-          <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-            {success}
-          </div>
-        )}
-        
-        <button
-          className={`mt-6 w-full p-3 rounded-lg font-medium flex items-center justify-center 
-            ${isLoading || parsedRecipients.length === 0 
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-          onClick={handleDisperseTokens}
-          disabled={isLoading || parsedRecipients.length === 0}
-        >
-          {isLoading ? (
-            <>
-              <FaSpinner className="animate-spin mr-2" />
-              Processing...
-            </>
-          ) : (
-            <>
-              <FaRandom className="mr-2" />
-              Disperse Tokens
-            </>
-          )}
-        </button>
-        
-        <div className="mt-2 text-xs text-gray-500">
-          Gas costs will be optimized by batching all transfers in a single transaction.
-        </div>
-      </div>
+      {renderContent()}
     </div>
   );
 };
