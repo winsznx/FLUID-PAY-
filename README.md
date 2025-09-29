@@ -1,12 +1,40 @@
-# React + Vite
+Here’s a cleaner, more polished revamp of that README while keeping it minimal and professional:
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+# React + Vite Starter
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project provides a minimal setup to get **React** working with **Vite**, including Hot Module Replacement (HMR) and some basic ESLint rules.
 
-## Expanding the ESLint configuration
+## Available Plugins
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+You can choose between two official React plugins:
+
+* [**@vitejs/plugin-react**](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) – uses [Babel](https://babeljs.io/) for Fast Refresh.
+* [**@vitejs/plugin-react-swc**](https://github.com/vitejs/vite-plugin-react-swc) – uses [SWC](https://swc.rs/) for Fast Refresh (faster builds).
+
+## ESLint Configuration
+
+The template comes with a lightweight ESLint setup.
+For production-grade apps, we recommend:
+
+* Using **TypeScript** for stronger type safety.
+* Enabling **type-aware lint rules** with [`typescript-eslint`](https://typescript-eslint.io).
+* Starting with the [React + TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) if you plan to scale.
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
